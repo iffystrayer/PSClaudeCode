@@ -1,5 +1,5 @@
 $p = @{
-    Path        = ".\PSClaudeCode"
+    Name        = "PSClaudeCode"
     NuGetApiKey = $NuGetApiKey
 }
 
