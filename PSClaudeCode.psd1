@@ -4,7 +4,7 @@
     Author            = 'Doug Finke'
     CompanyName       = 'Doug Finke'
     Copyright         = '(c) 2026 Douglas Finke. All rights reserved.'
-    Description       = 'A PowerShell module for building AI agents using OpenAI API, with reference implementations for tool-based interactions.'
+    Description       = 'A PowerShell module for building Claude Code using OpenAI, with reference implementations for tool-based interactions.'
     PowerShellVersion = '5.1'
     ModuleToProcess   = 'PSClaudeCode.psm1'
     FunctionsToExport = @('Invoke-PSClaudeCodeAgent')
