@@ -1,7 +1,3 @@
-## Grok Conversation
-
-https://grok.com/c/8d5af9ee-222d-4662-9747-83fa28bff21e?rid=4a4c306a-66f6-4b5d-a794-24be113598a4
-
 ## X Post
 https://x.com/dabit3/status/2009668398691582315?s=20
 
