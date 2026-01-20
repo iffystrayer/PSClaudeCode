@@ -17,6 +17,16 @@ Ever wondered how AI agents like Claude Code work their magic? Dive into this Po
 
 Inspired by the original [Claude Code article](https://x.com/dabit3/status/2009668398691582315?s=20), this project demonstrates how to create a PowerShell AI agent using Anthropic's Claude API. Start with a simple command runner and evolve it into a sophisticated agent with function calling, file operations, and conversational capabilities.
 
+# In Action
+
+Demo: the agent reads monthly CSV sales files and autonomously creates quarterly Excel workbooks using the ImportExcel module. The agent has no built-in logic for CSVs or Excel. It figures out what to do through iteration and tool use.
+
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=7choAjuJ2BA">
+    <img src="https://img.youtube.com/vi/7choAjuJ2BA/maxresdefault.jpg" alt="Claude Code: Built Natively in PowerShell" style="width:100%; max-width:600px;">
+  </a>
+</div>
+
 ## Table of Contents
 - [Features](#features)
 - [Prerequisites](#prerequisites)
