@@ -5,6 +5,10 @@ BeforeAll {
 
     # Store original API key
     $script:OriginalApiKey = $env:ANTHROPIC_API_KEY
+
+    # Load function content once for all tests
+    $script:FunctionPath = Join-Path $PSScriptRoot '..' 'Public' 'Invoke-PSClaudeCode.ps1'
+    $script:FunctionContent = Get-Content $script:FunctionPath -Raw
 }
 
 AfterAll {
@@ -52,24 +56,19 @@ Describe 'Invoke-PSClaudeCode' {
 
     Context 'Tool Definitions' {
         It 'Should define Read-File tool' {
-            # Source the function to access internal tools
-            $functionContent = Get-Content (Join-Path $PSScriptRoot '..' 'Public' 'Invoke-PSClaudeCode.ps1') -Raw
-            $functionContent | Should -Match 'name\s*=\s*"Read-File"'
+            $script:FunctionContent | Should -Match 'name\s*=\s*"Read-File"'
         }
 
         It 'Should define Write-File tool' {
-            $functionContent = Get-Content (Join-Path $PSScriptRoot '..' 'Public' 'Invoke-PSClaudeCode.ps1') -Raw
-            $functionContent | Should -Match 'name\s*=\s*"Write-File"'
+            $script:FunctionContent | Should -Match 'name\s*=\s*"Write-File"'
         }
 
         It 'Should define Run-Command tool' {
-            $functionContent = Get-Content (Join-Path $PSScriptRoot '..' 'Public' 'Invoke-PSClaudeCode.ps1') -Raw
-            $functionContent | Should -Match 'name\s*=\s*"Run-Command"'
+            $script:FunctionContent | Should -Match 'name\s*=\s*"Run-Command"'
         }
 
         It 'Should define Delegate-Task tool' {
-            $functionContent = Get-Content (Join-Path $PSScriptRoot '..' 'Public' 'Invoke-PSClaudeCode.ps1') -Raw
-            $functionContent | Should -Match 'name\s*=\s*"Delegate-Task"'
+            $script:FunctionContent | Should -Match 'name\s*=\s*"Delegate-Task"'
         }
     }
 
@@ -82,96 +81,79 @@ Describe 'Invoke-PSClaudeCode' {
         }
 
         It 'Should have Execute-Tool function defined' {
-            $functionContent = Get-Content (Join-Path $PSScriptRoot '..' 'Public' 'Invoke-PSClaudeCode.ps1') -Raw
-            $functionContent | Should -Match 'function Execute-Tool'
+            $script:FunctionContent | Should -Match 'function Execute-Tool'
         }
 
         It 'Should handle Read-File tool execution' {
-            $functionContent = Get-Content (Join-Path $PSScriptRoot '..' 'Public' 'Invoke-PSClaudeCode.ps1') -Raw
-            $functionContent | Should -Match '"Read-File"[\s\S]*Get-Content'
+            $script:FunctionContent | Should -Match '"Read-File"[\s\S]*Get-Content'
         }
 
         It 'Should handle Write-File tool execution' {
-            $functionContent = Get-Content (Join-Path $PSScriptRoot '..' 'Public' 'Invoke-PSClaudeCode.ps1') -Raw
-            $functionContent | Should -Match '"Write-File"[\s\S]*Set-Content'
+            $script:FunctionContent | Should -Match '"Write-File"[\s\S]*Set-Content'
         }
 
         It 'Should handle Run-Command tool execution' {
-            $functionContent = Get-Content (Join-Path $PSScriptRoot '..' 'Public' 'Invoke-PSClaudeCode.ps1') -Raw
-            $functionContent | Should -Match '"Run-Command"[\s\S]*Invoke-Expression'
+            $script:FunctionContent | Should -Match '"Run-Command"[\s\S]*Invoke-Expression'
         }
 
         It 'Should handle Delegate-Task tool execution' {
-            $functionContent = Get-Content (Join-Path $PSScriptRoot '..' 'Public' 'Invoke-PSClaudeCode.ps1') -Raw
-            $functionContent | Should -Match '"Delegate-Task"[\s\S]*Run-SubAgent'
+            $script:FunctionContent | Should -Match '"Delegate-Task"[\s\S]*Run-SubAgent'
         }
     }
 
     Context 'Check-Permission Function Behavior' {
         It 'Should have Check-Permission function defined' {
-            $functionContent = Get-Content (Join-Path $PSScriptRoot '..' 'Public' 'Invoke-PSClaudeCode.ps1') -Raw
-            $functionContent | Should -Match 'function Check-Permission'
+            $script:FunctionContent | Should -Match 'function Check-Permission'
         }
 
         It 'Should check dangerous commands in Run-Command tool' {
-            $functionContent = Get-Content (Join-Path $PSScriptRoot '..' 'Public' 'Invoke-PSClaudeCode.ps1') -Raw
-            $functionContent | Should -Match 'rm|del|Remove-Item'
+            $script:FunctionContent | Should -Match 'rm|del|Remove-Item'
         }
 
         It 'Should prompt for Write-File permissions' {
-            $functionContent = Get-Content (Join-Path $PSScriptRoot '..' 'Public' 'Invoke-PSClaudeCode.ps1') -Raw
-            $functionContent | Should -Match '"Write-File"'
-            $functionContent | Should -Match 'Read-Host'
+            $script:FunctionContent | Should -Match '"Write-File"'
+            $script:FunctionContent | Should -Match 'Read-Host'
         }
 
         It 'Should respect dangerouslySkipPermissions flag' {
-            $functionContent = Get-Content (Join-Path $PSScriptRoot '..' 'Public' 'Invoke-PSClaudeCode.ps1') -Raw
-            $functionContent | Should -Match 'dangerouslySkipPermissions.*return \$true'
+            $script:FunctionContent | Should -Match 'dangerouslySkipPermissions.*return \$true'
         }
     }
 
     Context 'Run-SubAgent Function Behavior' {
         It 'Should have Run-SubAgent function defined' {
-            $functionContent = Get-Content (Join-Path $PSScriptRoot '..' 'Public' 'Invoke-PSClaudeCode.ps1') -Raw
-            $functionContent | Should -Match 'function Run-SubAgent'
+            $script:FunctionContent | Should -Match 'function Run-SubAgent'
         }
 
         It 'Should have MaxTurns parameter with default value' {
-            $functionContent = Get-Content (Join-Path $PSScriptRoot '..' 'Public' 'Invoke-PSClaudeCode.ps1') -Raw
-            $functionContent | Should -Match 'MaxTurns.*=.*10'
+            $script:FunctionContent | Should -Match 'MaxTurns.*=.*10'
         }
 
         It 'Should call Anthropic API in sub-agent' {
-            $functionContent = Get-Content (Join-Path $PSScriptRoot '..' 'Public' 'Invoke-PSClaudeCode.ps1') -Raw
-            $functionContent | Should -Match 'api\.anthropic\.com/v1/messages'
+            $script:FunctionContent | Should -Match 'api\.anthropic\.com/v1/messages'
         }
     }
 
     Context 'Main Function Behavior' {
         It 'Should use default Claude model when not specified' {
-            $functionContent = Get-Content (Join-Path $PSScriptRoot '..' 'Public' 'Invoke-PSClaudeCode.ps1') -Raw
-            $functionContent | Should -Match 'Model\s*=\s*"claude-sonnet-4-5-20250929"'
+            $script:FunctionContent | Should -Match 'Model\s*=\s*"claude-sonnet-4-5-20250929"'
         }
 
         It 'Should call Anthropic API endpoint' {
-            $functionContent = Get-Content (Join-Path $PSScriptRoot '..' 'Public' 'Invoke-PSClaudeCode.ps1') -Raw
-            $functionContent | Should -Match 'https://api\.anthropic\.com/v1/messages'
+            $script:FunctionContent | Should -Match 'https://api\.anthropic\.com/v1/messages'
         }
 
         It 'Should set correct API headers' {
-            $functionContent = Get-Content (Join-Path $PSScriptRoot '..' 'Public' 'Invoke-PSClaudeCode.ps1') -Raw
-            $functionContent | Should -Match 'x-api-key'
-            $functionContent | Should -Match 'anthropic-version'
+            $script:FunctionContent | Should -Match 'x-api-key'
+            $script:FunctionContent | Should -Match 'anthropic-version'
         }
 
         It 'Should process tool uses from API response' {
-            $functionContent = Get-Content (Join-Path $PSScriptRoot '..' 'Public' 'Invoke-PSClaudeCode.ps1') -Raw
-            $functionContent | Should -Match 'tool_use'
+            $script:FunctionContent | Should -Match 'tool_use'
         }
 
         It 'Should handle text content in responses' {
-            $functionContent = Get-Content (Join-Path $PSScriptRoot '..' 'Public' 'Invoke-PSClaudeCode.ps1') -Raw
-            $functionContent | Should -Match 'type.*-eq.*"text"'
+            $script:FunctionContent | Should -Match 'type.*-eq.*"text"'
         }
     }
 
