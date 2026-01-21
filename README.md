@@ -27,7 +27,30 @@ Demo: the agent reads monthly CSV sales files and autonomously creates quarterly
   </a>
 </div>
 
+## Working Examples
+
+This shows PSClaudeCode in action, showcasing the AI agent's ability to autonomously analyze logs, extract insights, and generate structured reports through iterative tool use.
+
+```powershell
+ipcc -dangerouslySkipPermissions "ck the system log. save analysis to a mardkown file in d:\temp\logAnalysis" &
+```
+
+### Agent Creating Log Analysis Report
+This screenshot shows the AI agent autonomously processing a log file, extracting key insights, and generating a structured analysis report. The agent uses iterative tool calls to read the file, analyze patterns, and create meaningful output without any hardcoded logic for log processing.
+
+**Note**: The `&` symbol creating this as a background job. This demonstrates "parallel" agent execution.
+
+![Agent analyzing logs and creating a report](media/ipcc-check-logs.png)
+
+### Sample Log Section
+This image displays a sample section of the log file being analyzed, showing the raw data format that the agent works with. It demonstrates how the agent can handle various text-based inputs and adapt its analysis approach accordingly.
+
+![Sample section of log file being analyzed](media/ipcc-log-sample-section.png)
+
+The examples above highlight how the agent can handle complex, multi-step tasks without predefined logic, adapting to the specific requirements of log analysis and reporting.
+
 ## Table of Contents
+- [Working Examples](#working-examples)
 - [Features](#features)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
