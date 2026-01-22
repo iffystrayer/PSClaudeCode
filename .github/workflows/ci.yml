@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '**'  # Run on all branches
+    paths-ignore:
+      - '**.md'  # Skip when only markdown files are changed
+  pull_request:
+    branches:
+      - '**'  # Run on all branches
+    paths-ignore:
+      - '**.md'  # Skip when only markdown files are changed
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install PowerShell modules
+        shell: pwsh
+        run: |
+          Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+          Install-Module -Name Pester -MinimumVersion 5.0.0 -Force -Scope CurrentUser
+      
+      - name: Run Pester tests
+        shell: pwsh
+        run: |
+          Import-Module Pester
+          $config = New-PesterConfiguration
+          $config.Run.Path = './Tests'
+          $config.Run.Exit = $true
+          $config.TestResult.Enabled = $true
+          $config.CodeCoverage.Enabled = $false
+          $config.Output.Verbosity = 'Detailed'
+          Invoke-Pester -Configuration $config
