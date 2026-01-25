@@ -72,6 +72,8 @@ function Invoke-PSClaudeCode {
         $apiKey = $env:ANTHROPIC_API_KEY
         if (-not $apiKey) { Write-Host "Set ANTHROPIC_API_KEY"; exit }
 
+        Write-Host "[$((Get-Date).ToString('HH:mm:ss'))] 🤖 Processing request..."
+
         $tools = @(
             @{
                 name         = "Read-File"
@@ -164,12 +166,13 @@ function Invoke-PSClaudeCode {
         function Run-SubAgent {
             param([string]$SubTask, [int]$MaxTurns = 10)
         
-            Write-Host "🤖 Starting sub-agent for: $SubTask"
+            Write-Host "[$((Get-Date).ToString('HH:mm:ss'))] 🤖 Starting sub-agent for: $SubTask"
             $subMessages = @(@{ role = "user"; content = $SubTask })
             $turns = 0
         
             while ($turns -lt $MaxTurns) {
                 $turns++
+                Write-Host "[$((Get-Date).ToString('HH:mm:ss'))]   🤖 Consulting Claude..."
                 $body = @{
                     model      = $Model
                     messages   = $subMessages
@@ -182,6 +185,8 @@ function Invoke-PSClaudeCode {
                     "anthropic-version" = "2023-06-01"
                     "Content-Type"      = "application/json"
                 } -Body $body
+                
+                Write-Host "[$((Get-Date).ToString('HH:mm:ss'))]   🤖 Response received, analyzing..."
             
                 $assistantMessage = @{ role = "assistant"; content = $response.content }
                 $subMessages += $assistantMessage
@@ -194,15 +199,15 @@ function Invoke-PSClaudeCode {
                         $toolName = $toolUse.name
                         $toolInput = $toolUse.input
                     
-                        Write-Host "  🔧 $toolName`: $($toolInput | ConvertTo-Json -Compress)"
+                        Write-Host "[$((Get-Date).ToString('HH:mm:ss'))]   🔧 $toolName`: $($toolInput | ConvertTo-Json -Compress)"
                     
                         if (Check-Permission $toolName $toolInput) {
                             $result = Execute-Tool $toolName $toolInput
-                            Write-Host "     → $($result.Substring(0, [Math]::Min(100, $result.Length)))..."
+                            Write-Host "[$((Get-Date).ToString('HH:mm:ss'))]      → $($result.Substring(0, [Math]::Min(100, $result.Length)))..."
                         }
                         else {
                             $result = "Permission denied by user"
-                            Write-Host "     🚫 $result"
+                            Write-Host "[$((Get-Date).ToString('HH:mm:ss'))]      🚫 $result"
                         }
                     
                         $toolResults += @{
@@ -216,7 +221,7 @@ function Invoke-PSClaudeCode {
                 }
                 else {
                     $textContent = ($response.content | Where-Object { $_.type -eq "text" } | ForEach-Object { $_.text }) -join ""
-                    Write-Host "🤖 Sub-agent result: $textContent"
+                    Write-Host "[$((Get-Date).ToString('HH:mm:ss'))] 🤖 Sub-agent result: $textContent"
                     return $textContent
                 }
             }
@@ -247,6 +252,11 @@ function Invoke-PSClaudeCode {
         $messages = @(@{ role = "user"; content = $Task })
 
         while ($true) {
+            if ($messages.Count -gt 1) {
+                Write-Host "[$((Get-Date).ToString('HH:mm:ss'))] 🤖 Continuing analysis..."
+            }
+            
+            Write-Host "[$((Get-Date).ToString('HH:mm:ss'))] 🤖 Consulting Claude..."
             $body = @{
                 model      = $Model
                 messages   = $messages
@@ -259,6 +269,8 @@ function Invoke-PSClaudeCode {
                 "anthropic-version" = "2023-06-01"
                 "Content-Type"      = "application/json"
             } -Body $body
+            
+            Write-Host "[$((Get-Date).ToString('HH:mm:ss'))] 🤖 Response received, analyzing..."
 
             $assistantMessage = @{ role = "assistant"; content = $response.content }
             $messages += $assistantMessage
@@ -271,15 +283,15 @@ function Invoke-PSClaudeCode {
                     $toolName = $toolUse.name
                     $toolInput = $toolUse.input
                 
-                    Write-Host "🔧 $toolName`: $($toolInput | ConvertTo-Json -Compress)"
+                    Write-Host "[$((Get-Date).ToString('HH:mm:ss'))] 🔧 $toolName`: $($toolInput | ConvertTo-Json -Compress)"
                 
                     if (Check-Permission $toolName $toolInput) {
                         $result = Execute-Tool $toolName $toolInput
-                        Write-Host "   → $($result.Substring(0, [Math]::Min(200, $result.Length)))..."
+                        Write-Host "[$((Get-Date).ToString('HH:mm:ss'))]    → $($result.Substring(0, [Math]::Min(200, $result.Length)))..."
                     }
                     else {
                         $result = "Permission denied by user"
-                        Write-Host "   🚫 $result"
+                        Write-Host "[$((Get-Date).ToString('HH:mm:ss'))]    🚫 $result"
                     }
                 
                     $toolResults += @{
@@ -293,7 +305,7 @@ function Invoke-PSClaudeCode {
             }
             else {
                 $textContent = ($response.content | Where-Object { $_.type -eq "text" } | ForEach-Object { $_.text }) -join ""
-                Write-Host "✅ $textContent"
+                Write-Host "[$((Get-Date).ToString('HH:mm:ss'))] ✅ $textContent"
                 break
             }
         }

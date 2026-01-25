@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Comment-Based Help**: Added comprehensive PowerShell comment-based help to `Invoke-PSClaudeCode` function with SYNOPSIS, DESCRIPTION, PARAMETERS, EXAMPLES, and NOTES sections
 - **Pipeline Input Support**: Enhanced `Invoke-PSClaudeCode` to accept pipeline input as context, allowing content to be piped directly to the agent
 - **Enhanced Test Coverage**: Added comprehensive tests for help functionality and pipeline input processing
+- **Progress Indicators with Timestamps**: Added timestamped progress messages throughout the agent execution for better visibility into processing stages
 
 ### Changed
 - **Documentation**: Updated README.md with new features, pipeline input examples, and help usage instructions
