@@ -71,6 +71,7 @@ The examples above highlight how the agent can handle complex, multi-step tasks 
 - **Progressive Complexity**: Three agent versions showing evolution from simple to advanced
 - **Comment-Based Help**: Full PowerShell help documentation with `Get-Help Invoke-PSClaudeCode`
 - **Pipeline Input Support**: Accept context via pipeline for enhanced task descriptions
+- **Progress Indicators**: Timestamped status messages showing agent processing stages
 
 ## Prerequisites
 - PowerShell 5.1 or higher
